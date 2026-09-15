@@ -1,8 +1,8 @@
 [
-  { "code": "TEAM01", "name": "Red Team", "colour": "#e6194b", "balance": 0 },
-  { "code": "TEAM02", "name": "Blue Team", "colour": "#4363d8", "balance": 0 },
-  { "code": "TEAM03", "name": "Green Team", "colour": "#3cb44b", "balance": 0 },
-  { "code": "TEAM04", "name": "Yellow Team", "colour": "#f0c419", "balance": 0 },
-  { "code": "TEAM05", "name": "Purple Team", "colour": "#911eb4", "balance": 0 },
-  { "code": "TEAM06", "name": "Orange Team", "colour": "#f58231", "balance": 0 }
+  { "code": "TEAM01", "name": "Otters", "colour": "#e6194b", "balance": 0 },
+  { "code": "TEAM02", "name": "Kestrels", "colour": "#4363d8", "balance": 0 },
+  { "code": "TEAM03", "name": "Badgers", "colour": "#3cb44b", "balance": 0 },
+  { "code": "TEAM04", "name": "Vipers", "colour": "#f0c419", "balance": 0 },
+  { "code": "TEAM05", "name": "Eagles", "colour": "#911eb4", "balance": 0 },
+  { "code": "TEAM06", "name": "Wolves", "colour": "#f58231", "balance": 0 }
 ]

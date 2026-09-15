@@ -39,9 +39,9 @@
     item.className = `feed-item ${cls || ''}`.trim();
     const time = new Date(timestamp || Date.now()).toLocaleTimeString();
     item.innerHTML = `<span>${text}</span><time>${time}</time>`;
-    feedEl.appendChild(item);
+    feedEl.insertBefore(item, feedEl.firstChild);
     while (feedEl.children.length > 100) {
-      feedEl.removeChild(feedEl.firstChild);
+      feedEl.removeChild(feedEl.lastChild);
     }
   }
 

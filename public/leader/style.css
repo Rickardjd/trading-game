@@ -57,7 +57,7 @@ main {
   padding: 10px 18px; border: none; border-radius: 8px; background: #3c8ce0; color: #fff; cursor: pointer; font-weight: 700;
 }
 
-.feed { max-height: 50vh; overflow-y: auto; display: flex; flex-direction: column-reverse; gap: 8px; }
+.feed { max-height: 50vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; }
 .feed-item { padding: 10px 12px; border-radius: 8px; background: #f7f7fb; font-size: 0.95rem; display: flex; gap: 10px; align-items: baseline; }
 .feed-item .swatch { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
 .feed-item time { margin-left: auto; color: #888; font-size: 0.8rem; white-space: nowrap; }
