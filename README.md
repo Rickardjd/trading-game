@@ -33,7 +33,8 @@ needed, which also makes Raspberry Pi deployment simpler; see `docs/raspberry-pi
   plain HTML/CSS/JS, no build step.
 - `tools/card-generator/` — `npm run cards` generates a printable HTML sheet of QR
   codes for team and activity cards.
-- `docs/` — Raspberry Pi deployment guide and the day-of run book.
+- `docs/` — Raspberry Pi deployment guide, scanner equipment guide, and the day-of run
+  book.
 
 ## Data model
 
