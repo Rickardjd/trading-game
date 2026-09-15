@@ -9,13 +9,19 @@
 
   let teams = [];
 
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, (c) => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;',
+    }[c]));
+  }
+
   function renderStandings(list) {
     teams = list;
     const sorted = [...list].sort((a, b) => b.balance - a.balance);
     standingsBody.innerHTML = sorted
       .map(
         (t) => `<tr>
-          <td><span class="swatch" style="background:${t.colour}"></span>${t.name}</td>
+          <td><span class="swatch" style="background:${t.colour}"></span>${escapeHtml(t.name)}</td>
           <td>£${t.balance}</td>
         </tr>`
       )
@@ -23,7 +29,7 @@
 
     const currentValue = adjTeam.value;
     adjTeam.innerHTML = list
-      .map((t) => `<option value="${t.code}">${t.name}</option>`)
+      .map((t) => `<option value="${t.code}">${escapeHtml(t.name)}</option>`)
       .join('');
     if (currentValue) adjTeam.value = currentValue;
   }
@@ -43,19 +49,19 @@
     if (evt.type === 'completion') {
       const c = evt.completion;
       addFeedItem(
-        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${evt.team.name}</strong> completed ${evt.activity.code} ${evt.activity.name} — ${c.award_level} (£${c.awarded_value})`,
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${escapeHtml(evt.team.name)}</strong> completed ${escapeHtml(evt.activity.code)} ${escapeHtml(evt.activity.name)} — ${escapeHtml(c.award_level)} (£${c.awarded_value})`,
         'completion',
         evt.timestamp
       );
     } else if (evt.type === 'adjustment') {
       addFeedItem(
-        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${evt.team.name}</strong> manual adjustment: ${evt.amount >= 0 ? '+' : ''}${evt.amount} ${evt.note ? `(${evt.note})` : ''}`,
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${escapeHtml(evt.team.name)}</strong> manual adjustment: ${evt.amount >= 0 ? '+' : ''}${evt.amount} ${evt.note ? `(${escapeHtml(evt.note)})` : ''}`,
         'adjustment',
         evt.timestamp
       );
     } else if (evt.type === 'undo') {
       addFeedItem(
-        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${evt.team.name}</strong> — undo: ${evt.reversed.note || evt.reversed.type}`,
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${escapeHtml(evt.team.name)}</strong> — undo: ${escapeHtml(evt.reversed.note || evt.reversed.type)}`,
         'undo',
         evt.timestamp
       );
@@ -68,12 +74,12 @@
     rows.reverse().forEach((row) => {
       const label =
         row.type === 'completion'
-          ? `completion: ${row.note || ''}`
+          ? `completion: ${escapeHtml(row.note || '')}`
           : row.type === 'undo'
-          ? `undo: ${row.note || ''}`
-          : `adjustment: ${row.amount >= 0 ? '+' : ''}${row.amount} ${row.note ? `(${row.note})` : ''}`;
+          ? `undo: ${escapeHtml(row.note || '')}`
+          : `adjustment: ${row.amount >= 0 ? '+' : ''}${row.amount} ${row.note ? `(${escapeHtml(row.note)})` : ''}`;
       addFeedItem(
-        `<span class="swatch" style="background:${row.team_colour}"></span> <strong>${row.team_name}</strong> ${label}`,
+        `<span class="swatch" style="background:${row.team_colour}"></span> <strong>${escapeHtml(row.team_name)}</strong> ${label}`,
         row.type,
         row.timestamp
       );

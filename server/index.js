@@ -4,7 +4,6 @@ const express = require('express');
 const { Server } = require('socket.io');
 
 const db = require('./db');
-const teamsRouter = require('./routes/teams');
 const activitiesRouter = require('./routes/activities');
 
 const app = express();
@@ -13,7 +12,7 @@ const io = new Server(server);
 
 app.use(express.json());
 
-app.use('/api/teams', teamsRouter);
+app.use('/api/teams', require('./routes/teams')(io));
 app.use('/api/activities', activitiesRouter);
 app.use('/api/completions', require('./routes/completions')(io));
 app.use('/api/transactions', require('./routes/transactions')(io));

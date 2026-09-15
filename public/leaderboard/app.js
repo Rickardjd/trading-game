@@ -14,7 +14,6 @@
 
     const label = document.createElement('div');
     label.className = 'bar-label';
-    label.textContent = team.name;
 
     const track = document.createElement('div');
     track.className = 'bar-track';
@@ -32,9 +31,16 @@
     row.appendChild(value);
     barsEl.appendChild(row);
 
-    const entry = { row, fill, value };
+    const entry = { row, label, fill, value };
     rowEls.set(team.id, entry);
     return entry;
+  }
+
+  function applyLabel(label, name) {
+    label.textContent = name;
+    label.classList.remove('len-med', 'len-long');
+    if (name.length > 16) label.classList.add('len-long');
+    else if (name.length > 10) label.classList.add('len-med');
   }
 
   function render(teams) {
@@ -44,6 +50,7 @@
     sorted.forEach((team, index) => {
       const entry = ensureRow(team);
       entry.row.style.top = `${index * ROW_HEIGHT_VH}vh`;
+      applyLabel(entry.label, team.name);
       const pct = Math.max(1.5, Math.round((Math.max(0, team.balance) / maxBalance) * 100));
       entry.fill.style.width = `${pct}%`;
       entry.value.textContent = `£${team.balance}`;

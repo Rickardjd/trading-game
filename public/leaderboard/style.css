@@ -36,7 +36,7 @@ html, body {
 }
 
 .bar-label {
-  width: 18vw;
+  width: 22vw;
   font-size: 2.4vw;
   font-weight: 800;
   text-align: right;
@@ -45,6 +45,8 @@ html, body {
   overflow: hidden;
   text-overflow: ellipsis;
 }
+.bar-label.len-med { font-size: 1.8vw; }
+.bar-label.len-long { font-size: 1.4vw; }
 
 .bar-track {
   flex: 1;

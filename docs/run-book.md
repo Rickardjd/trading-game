@@ -2,8 +2,10 @@
 
 ## Before the event
 
-1. Edit `server/seed/teams.json` with real team names (and colours if you want to
-   change the defaults).
+1. Team names can either be set in `server/seed/teams.json` ahead of time, or left as
+   placeholders (Red Team, Blue Team, ...) and renamed on the day from the banking
+   station itself — see "Setting team names on the day" below. Colours are only set in
+   the JSON file, so change those there if you want non-default colours.
 2. Check `server/seed/activities.json` matches what you're actually running on the day
    (edit values/descriptions if anything changed since planning).
 3. Run `npm run seed` on the server to load that data.
@@ -31,6 +33,21 @@
    (F11 in most browsers).
 5. Optionally, open `http://<server-ip>:3000/leader` on a leader's own laptop/tablet
    for the live activity feed, manual adjustments, and undo.
+
+## Setting team names on the day
+
+If you didn't set real team names in `teams.json` beforehand, do it now, before
+trading starts:
+
+1. On any banking station, scan a team's card (or type its code) to bring up that
+   team's panel.
+2. Click "Rename team", type the real name, and confirm.
+3. The new name appears on the leaderboard and leader dashboard immediately.
+
+Names are capped at 24 characters so they stay readable on the leaderboard — longer
+names shrink to fit automatically, but very long ones will still be trimmed with "…".
+Renaming works at any point in the game, not just at the start, so it also doubles as
+a quick way to fix a typo later.
 
 ## During the game
 
