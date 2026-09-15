@@ -1,0 +1,121 @@
+(() => {
+  const standingsBody = document.querySelector('#standingsTable tbody');
+  const feedEl = document.getElementById('feed');
+  const adjForm = document.getElementById('adjustmentForm');
+  const adjTeam = document.getElementById('adjTeam');
+  const adjAmount = document.getElementById('adjAmount');
+  const adjNote = document.getElementById('adjNote');
+  const undoBtn = document.getElementById('undoBtn');
+
+  let teams = [];
+
+  function renderStandings(list) {
+    teams = list;
+    const sorted = [...list].sort((a, b) => b.balance - a.balance);
+    standingsBody.innerHTML = sorted
+      .map(
+        (t) => `<tr>
+          <td><span class="swatch" style="background:${t.colour}"></span>${t.name}</td>
+          <td>£${t.balance}</td>
+        </tr>`
+      )
+      .join('');
+
+    const currentValue = adjTeam.value;
+    adjTeam.innerHTML = list
+      .map((t) => `<option value="${t.code}">${t.name}</option>`)
+      .join('');
+    if (currentValue) adjTeam.value = currentValue;
+  }
+
+  function addFeedItem(text, cls, timestamp) {
+    const item = document.createElement('div');
+    item.className = `feed-item ${cls || ''}`.trim();
+    const time = new Date(timestamp || Date.now()).toLocaleTimeString();
+    item.innerHTML = `<span>${text}</span><time>${time}</time>`;
+    feedEl.appendChild(item);
+    while (feedEl.children.length > 100) {
+      feedEl.removeChild(feedEl.firstChild);
+    }
+  }
+
+  function handleFeedEvent(evt) {
+    if (evt.type === 'completion') {
+      const c = evt.completion;
+      addFeedItem(
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${evt.team.name}</strong> completed ${evt.activity.code} ${evt.activity.name} — ${c.award_level} (£${c.awarded_value})`,
+        'completion',
+        evt.timestamp
+      );
+    } else if (evt.type === 'adjustment') {
+      addFeedItem(
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${evt.team.name}</strong> manual adjustment: ${evt.amount >= 0 ? '+' : ''}${evt.amount} ${evt.note ? `(${evt.note})` : ''}`,
+        'adjustment',
+        evt.timestamp
+      );
+    } else if (evt.type === 'undo') {
+      addFeedItem(
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${evt.team.name}</strong> — undo: ${evt.reversed.note || evt.reversed.type}`,
+        'undo',
+        evt.timestamp
+      );
+    }
+  }
+
+  async function loadInitialFeed() {
+    const res = await fetch('/api/transactions/feed?limit=50');
+    const rows = await res.json();
+    rows.reverse().forEach((row) => {
+      const label =
+        row.type === 'completion'
+          ? `completion: ${row.note || ''}`
+          : row.type === 'undo'
+          ? `undo: ${row.note || ''}`
+          : `adjustment: ${row.amount >= 0 ? '+' : ''}${row.amount} ${row.note ? `(${row.note})` : ''}`;
+      addFeedItem(
+        `<span class="swatch" style="background:${row.team_colour}"></span> <strong>${row.team_name}</strong> ${label}`,
+        row.type,
+        row.timestamp
+      );
+    });
+  }
+
+  adjForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const body = {
+      team_code: adjTeam.value,
+      amount: Number(adjAmount.value),
+      note: adjNote.value || undefined,
+      station_id: 'leader-dashboard',
+    };
+    const res = await fetch('/api/transactions/adjustment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(body),
+    });
+    if (res.ok) {
+      adjAmount.value = '';
+      adjNote.value = '';
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Could not apply adjustment.');
+    }
+  });
+
+  undoBtn.addEventListener('click', async () => {
+    if (!window.confirm('Undo the most recent transaction across all stations?')) return;
+    const res = await fetch('/api/transactions/undo', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ station_id: 'leader-dashboard' }),
+    });
+    const data = await res.json();
+    if (!res.ok) alert(data.error || 'Nothing to undo.');
+  });
+
+  const socket = io();
+  socket.on('balance_update', renderStandings);
+  socket.on('feed_event', handleFeedEvent);
+
+  loadInitialFeed();
+})();

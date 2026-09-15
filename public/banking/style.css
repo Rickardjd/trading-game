@@ -1,0 +1,122 @@
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+  background: #f4f5f7;
+  color: #1a1a1a;
+}
+
+.topbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 20px;
+  background: #1a1a2e;
+  color: #fff;
+}
+
+.brand { font-size: 1.2rem; font-weight: 700; }
+.station-id { opacity: 0.8; font-size: 0.95rem; }
+
+.ghost-btn, .danger-btn {
+  border: none;
+  border-radius: 8px;
+  padding: 10px 16px;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+.ghost-btn { background: #33334d; color: #fff; }
+.danger-btn { background: #d1364a; color: #fff; margin-left: auto; }
+.ghost-btn:hover { background: #45456b; }
+.danger-btn:hover { background: #e2495d; }
+
+main {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 24px 16px 64px;
+}
+
+.scan-input {
+  width: 100%;
+  font-size: 1.6rem;
+  padding: 18px 20px;
+  border-radius: 12px;
+  border: 3px solid #4363d8;
+  outline: none;
+  margin-bottom: 20px;
+  text-align: center;
+}
+.scan-input:focus { border-color: #2843a8; box-shadow: 0 0 0 4px rgba(67,99,216,0.25); }
+
+.message {
+  padding: 14px 18px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+.message.error { background: #ffe1e5; color: #a30f2b; }
+.message.success { background: #dcf6e3; color: #106b2c; }
+.message.info { background: #e3ecff; color: #1f3fa3; }
+
+.panel {
+  background: #fff;
+  border-radius: 14px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.team-row { display: flex; align-items: center; gap: 16px; }
+.swatch { width: 42px; height: 42px; border-radius: 50%; display: inline-block; border: 2px solid rgba(0,0,0,0.1); }
+.team-name { font-size: 1.4rem; font-weight: 700; }
+.team-balance { font-size: 1.1rem; color: #444; }
+
+.activity-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.chip { background: #1a1a2e; color: #fff; padding: 4px 10px; border-radius: 999px; font-size: 0.85rem; font-weight: 700; }
+.activity-name { font-size: 1.4rem; font-weight: 700; }
+.activity-meta { color: #555; font-size: 0.95rem; margin-bottom: 14px; }
+
+.criteria-label { font-weight: 700; margin-bottom: 4px; color: #333; }
+.criteria { font-size: 1.1rem; line-height: 1.5; margin-bottom: 16px; padding: 12px 14px; background: #f7f7fb; border-radius: 10px; }
+
+#examinerNotes {
+  width: 100%;
+  min-height: 60px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 1rem;
+  margin-bottom: 16px;
+  resize: vertical;
+}
+
+.award-buttons {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+.award-btn {
+  font-size: 1.2rem;
+  font-weight: 700;
+  padding: 20px;
+  border: none;
+  border-radius: 12px;
+  color: #fff;
+  cursor: pointer;
+}
+.award-btn.poor { background: #e07a2d; }
+.award-btn.standard { background: #3c8ce0; }
+.award-btn.excellent { background: #2fa84f; }
+.award-btn.not-met { background: #8a8a99; }
+.award-btn:active { transform: scale(0.98); }
+
+.panel.reject { background: #fff1f2; border: 2px solid #e2495d; text-align: center; }
+.reject-title { font-size: 1.4rem; font-weight: 800; color: #a30f2b; margin-bottom: 8px; }
+.reject-detail { color: #7a1224; margin-bottom: 16px; }
+
+@media (max-width: 480px) {
+  .award-buttons { grid-template-columns: 1fr; }
+  .topbar { flex-wrap: wrap; }
+}

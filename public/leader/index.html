@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trading Game — Leader Dashboard</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Trading Game — Leader Dashboard</div>
+    <button id="undoBtn" class="danger-btn">Undo last transaction</button>
+  </header>
+
+  <main>
+    <section class="panel">
+      <h2>Standings</h2>
+      <table id="standingsTable" class="standings">
+        <thead><tr><th>Team</th><th>Balance</th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </section>
+
+    <section class="panel">
+      <h2>Manual adjustment</h2>
+      <form id="adjustmentForm" class="adjustment-form">
+        <select id="adjTeam" required></select>
+        <input id="adjAmount" type="number" placeholder="Amount (+/-)" required />
+        <input id="adjNote" type="text" placeholder="Reason" />
+        <button type="submit">Apply</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>Live activity feed</h2>
+      <div id="feed" class="feed"></div>
+    </section>
+  </main>
+
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Trading Game — Banking Station</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">Trading Game — Banking</div>
+    <div class="station-id" id="stationLabel"></div>
+    <button id="renameStationBtn" class="ghost-btn">Rename station</button>
+    <button id="undoBtn" class="danger-btn">Undo last transaction</button>
+  </header>
+
+  <main>
+    <input id="scanInput" class="scan-input" type="text" autocomplete="off" placeholder="Scan team card…" />
+
+    <div id="message" class="message" hidden></div>
+
+    <section id="teamPanel" class="panel" hidden>
+      <div class="team-row">
+        <span id="teamSwatch" class="swatch"></span>
+        <div>
+          <div id="teamName" class="team-name"></div>
+          <div id="teamBalance" class="team-balance"></div>
+        </div>
+        <button id="doneTeamBtn" class="ghost-btn" style="margin-left:auto">Done with this team</button>
+      </div>
+    </section>
+
+    <section id="activityPanel" class="panel" hidden>
+      <div class="activity-header">
+        <span id="activityCode" class="chip"></span>
+        <span id="activityName" class="activity-name"></span>
+      </div>
+      <div id="activityMeta" class="activity-meta"></div>
+      <div class="criteria-label">Examiner criteria</div>
+      <div id="activityCriteria" class="criteria"></div>
+
+      <textarea id="examinerNotes" placeholder="Examiner notes (optional)"></textarea>
+
+      <div class="award-buttons">
+        <button class="award-btn poor" data-level="poor">Poor</button>
+        <button class="award-btn standard" data-level="standard">Standard</button>
+        <button class="award-btn excellent" data-level="excellent">Excellent</button>
+        <button class="award-btn not-met" data-level="not_met">Not met (0)</button>
+      </div>
+    </section>
+
+    <section id="rejectPanel" class="panel reject" hidden>
+      <div class="reject-title">Already completed — no reward</div>
+      <div id="rejectDetail" class="reject-detail"></div>
+      <button id="rejectContinueBtn" class="ghost-btn">Scan another activity</button>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
