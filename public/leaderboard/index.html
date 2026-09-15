@@ -8,10 +8,15 @@
 </head>
 <body>
   <h1 class="title">Trading Game Leaderboard</h1>
+  <div id="timerBar" class="timer-bar" hidden>
+    <div id="timerValue" class="timer-value">00:00</div>
+    <div id="timerLabel" class="timer-label">Time remaining</div>
+  </div>
   <div id="bars" class="bars"></div>
   <div id="flash" class="flash" hidden></div>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script src="/shared/timer-client.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

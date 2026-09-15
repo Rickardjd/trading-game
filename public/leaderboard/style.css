@@ -19,10 +19,41 @@ html, body {
   text-shadow: 0 0 20px rgba(255,255,255,0.25);
 }
 
+.timer-bar {
+  text-align: center;
+  margin-bottom: 1.5vh;
+}
+.timer-value {
+  font-size: 5.5vw;
+  font-weight: 900;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.03em;
+  text-shadow: 0 0 20px rgba(255,255,255,0.25);
+}
+.timer-label {
+  font-size: 1.3vw;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  opacity: 0.7;
+}
+.timer-bar.paused .timer-value { color: #f0c419; text-shadow: 0 0 20px rgba(240,196,25,0.5); }
+.timer-bar.paused .timer-label::after { content: " — PAUSED"; color: #f0c419; opacity: 1; }
+.timer-bar.finished .timer-value {
+  color: #e2495d;
+  text-shadow: 0 0 24px rgba(226,73,93,0.7);
+  animation: timerPulse 1.2s ease-in-out infinite;
+}
+.timer-bar.finished .timer-label::after { content: " — TIME'S UP"; color: #e2495d; opacity: 1; }
+
+@keyframes timerPulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.4; }
+}
+
 .bars {
   position: relative;
   margin: 0 4vw;
-  height: 82vh;
+  height: 72vh;
 }
 
 .bar-row {

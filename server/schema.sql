@@ -46,3 +46,15 @@ CREATE TABLE IF NOT EXISTS transactions (
 
 CREATE INDEX IF NOT EXISTS idx_transactions_timestamp ON transactions(timestamp);
 CREATE INDEX IF NOT EXISTS idx_completions_team ON completions(team_id);
+
+-- Single-row table holding the game countdown timer's state.
+CREATE TABLE IF NOT EXISTS game_timer (
+  id INTEGER PRIMARY KEY CHECK (id = 1),
+  duration_seconds INTEGER NOT NULL DEFAULT 0,
+  status TEXT NOT NULL DEFAULT 'idle' CHECK (status IN ('idle', 'running', 'paused')),
+  ends_at TEXT,
+  remaining_seconds INTEGER NOT NULL DEFAULT 0
+);
+
+INSERT OR IGNORE INTO game_timer (id, duration_seconds, status, ends_at, remaining_seconds)
+VALUES (1, 0, 'idle', NULL, 0);

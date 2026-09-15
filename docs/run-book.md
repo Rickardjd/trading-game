@@ -49,6 +49,24 @@ names shrink to fit automatically, but very long ones will still be trimmed with
 Renaming works at any point in the game, not just at the start, so it also doubles as
 a quick way to fix a typo later.
 
+## Starting the game timer
+
+The leaderboard shows a big countdown once it's been started:
+
+1. On any banking station, enter the number of minutes in the "Minutes" box next to
+   the timer readout, and click "Set & start". This is the only place the timer is
+   set — the leaderboard and leader dashboard only display and (for pause) control it.
+2. The countdown appears immediately on the leaderboard, the banking station, and the
+   leader dashboard, all kept in sync from the server.
+3. If leaders need to pause for any reason, click "Pause" (on any banking station) or
+   "Pause game" (on the leader dashboard) — the countdown freezes at its current value
+   everywhere, and "Resume" picks up exactly where it left off.
+4. "Reset" (banking station only) clears the timer back to not-started, e.g. to correct
+   a wrong duration before trading actually begins.
+5. When time runs out, the leaderboard flashes red with "TIME'S UP" — no auto-lockout
+   of banking stations happens, so leaders still decide when to actually stop taking
+   completions.
+
 ## During the game
 
 - Duplicate attempts at an activity are rejected automatically and clearly — this is

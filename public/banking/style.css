@@ -37,6 +37,31 @@ main {
   padding: 24px 16px 64px;
 }
 
+.timer-panel { padding: 16px 20px; }
+.timer-panel-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.timer-display { display: flex; align-items: baseline; gap: 10px; }
+.timer-readout {
+  font-size: 2rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.timer-status { font-size: 0.9rem; color: #666; font-weight: 600; }
+.timer-panel.paused .timer-readout { color: #b8860b; }
+.timer-panel.finished .timer-readout { color: #d1364a; }
+.timer-controls { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
+.timer-minutes {
+  width: 90px;
+  padding: 10px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  font-size: 0.95rem;
+}
+
 .scan-input {
   width: 100%;
   font-size: 1.6rem;

@@ -6,6 +6,11 @@
   const adjAmount = document.getElementById('adjAmount');
   const adjNote = document.getElementById('adjNote');
   const undoBtn = document.getElementById('undoBtn');
+  const timerPanel = document.querySelector('.timer-panel');
+  const gameTimerValue = document.getElementById('gameTimerValue');
+  const gameTimerStatus = document.getElementById('gameTimerStatus');
+  const timerPauseBtn = document.getElementById('timerPauseBtn');
+  const timerResumeBtn = document.getElementById('timerResumeBtn');
 
   let teams = [];
 
@@ -119,9 +124,34 @@
     if (!res.ok) alert(data.error || 'Nothing to undo.');
   });
 
+  // --- Game timer ---
+  let timerState = null;
+
+  function renderGameTimer() {
+    if (!timerState) return;
+    const remaining = computeRemainingSeconds(timerState);
+    gameTimerValue.textContent = formatTimer(remaining);
+    const finished = timerState.status === 'running' && remaining <= 0;
+    timerPanel.classList.toggle('paused', timerState.status === 'paused');
+    timerPanel.classList.toggle('finished', finished);
+    gameTimerStatus.textContent =
+      timerState.status === 'paused' ? 'Paused' : finished ? "Time's up" : timerState.status === 'running' ? 'Running' : 'Not started';
+    timerPauseBtn.hidden = timerState.status !== 'running';
+    timerResumeBtn.hidden = timerState.status !== 'paused';
+  }
+
+  setInterval(renderGameTimer, 250);
+
+  timerPauseBtn.addEventListener('click', () => fetch('/api/timer/pause', { method: 'POST' }));
+  timerResumeBtn.addEventListener('click', () => fetch('/api/timer/resume', { method: 'POST' }));
+
   const socket = io();
   socket.on('balance_update', renderStandings);
   socket.on('feed_event', handleFeedEvent);
+  socket.on('timer_update', (state) => {
+    timerState = state;
+    renderGameTimer();
+  });
 
   loadInitialFeed();
 })();

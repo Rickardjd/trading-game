@@ -75,6 +75,29 @@
     setTimeout(() => { flashEl.hidden = true; }, 1800);
   }
 
+  const timerBar = document.getElementById('timerBar');
+  const timerValue = document.getElementById('timerValue');
+  let timerState = null;
+
+  function renderTimer() {
+    if (!timerState || (timerState.status === 'idle' && timerState.duration_seconds === 0)) {
+      timerBar.hidden = true;
+      return;
+    }
+    timerBar.hidden = false;
+    const remaining = computeRemainingSeconds(timerState);
+    timerValue.textContent = formatTimer(remaining);
+    const finished = timerState.status === 'running' && remaining <= 0;
+    timerBar.classList.toggle('paused', timerState.status === 'paused');
+    timerBar.classList.toggle('finished', finished);
+  }
+
+  setInterval(renderTimer, 250);
+
   const socket = io();
   socket.on('balance_update', render);
+  socket.on('timer_update', (state) => {
+    timerState = state;
+    renderTimer();
+  });
 })();

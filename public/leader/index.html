@@ -13,6 +13,19 @@
   </header>
 
   <main>
+    <section class="panel timer-panel">
+      <div class="timer-panel-row">
+        <div class="timer-display">
+          <span id="gameTimerValue" class="timer-readout">00:00</span>
+          <span id="gameTimerStatus" class="timer-status"></span>
+        </div>
+        <div class="timer-controls">
+          <button id="timerPauseBtn" class="ghost-btn" hidden>Pause game</button>
+          <button id="timerResumeBtn" class="ghost-btn" hidden>Resume game</button>
+        </div>
+      </div>
+    </section>
+
     <section class="panel">
       <h2>Standings</h2>
       <table id="standingsTable" class="standings">
@@ -38,6 +51,7 @@
   </main>
 
   <script src="/socket.io/socket.io.js"></script>
+  <script src="/shared/timer-client.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

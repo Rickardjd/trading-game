@@ -16,7 +16,9 @@ app.use('/api/teams', require('./routes/teams')(io));
 app.use('/api/activities', activitiesRouter);
 app.use('/api/completions', require('./routes/completions')(io));
 app.use('/api/transactions', require('./routes/transactions')(io));
+app.use('/api/timer', require('./routes/timer')(io));
 
+app.use('/shared', express.static(path.join(__dirname, '..', 'public', 'shared')));
 app.use('/banking', express.static(path.join(__dirname, '..', 'public', 'banking')));
 app.use('/leaderboard', express.static(path.join(__dirname, '..', 'public', 'leaderboard')));
 app.use('/leader', express.static(path.join(__dirname, '..', 'public', 'leader')));
@@ -28,6 +30,7 @@ app.get('/', (req, res) => {
 io.on('connection', (socket) => {
   const teams = db.prepare('SELECT * FROM teams ORDER BY balance DESC, name ASC').all();
   socket.emit('balance_update', teams);
+  socket.emit('timer_update', db.prepare('SELECT * FROM game_timer WHERE id = 1').get());
 });
 
 const PORT = process.env.PORT || 3000;

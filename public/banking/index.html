@@ -15,6 +15,22 @@
   </header>
 
   <main>
+    <section class="panel timer-panel">
+      <div class="timer-panel-row">
+        <div class="timer-display">
+          <span id="gameTimerValue" class="timer-readout">00:00</span>
+          <span id="gameTimerStatus" class="timer-status"></span>
+        </div>
+        <div class="timer-controls">
+          <input id="timerMinutes" type="number" min="1" max="240" placeholder="Minutes" class="timer-minutes" />
+          <button id="timerStartBtn" class="ghost-btn">Set &amp; start</button>
+          <button id="timerPauseBtn" class="ghost-btn" hidden>Pause</button>
+          <button id="timerResumeBtn" class="ghost-btn" hidden>Resume</button>
+          <button id="timerResetBtn" class="ghost-btn">Reset</button>
+        </div>
+      </div>
+    </section>
+
     <input id="scanInput" class="scan-input" type="text" autocomplete="off" placeholder="Scan team card…" />
 
     <div id="message" class="message" hidden></div>
@@ -57,6 +73,8 @@
     </section>
   </main>
 
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/shared/timer-client.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
