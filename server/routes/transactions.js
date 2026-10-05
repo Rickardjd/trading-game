@@ -1,5 +1,6 @@
 const express = require('express');
 const db = require('../db');
+const { openHires } = require('./items');
 
 function broadcastState(io) {
   const teams = db.prepare('SELECT * FROM teams ORDER BY balance DESC, name ASC').all();
@@ -52,13 +53,14 @@ module.exports = function createTransactionsRouter(io) {
     res.status(201).json({ team: updatedTeam });
   });
 
-  // Undo the most recent completion/adjustment that has not already been undone.
+  // Undo the most recent completion/adjustment/purchase/hire/late fee that has not
+  // already been undone.
   router.post('/undo', (req, res) => {
     const { station_id } = req.body || {};
 
     const target = db.prepare(`
       SELECT * FROM transactions
-      WHERE type IN ('completion', 'adjustment')
+      WHERE type IN ('completion', 'adjustment', 'purchase', 'hire', 'late_fee')
         AND id NOT IN (
           SELECT related_transaction_id FROM transactions
           WHERE type = 'undo' AND related_transaction_id IS NOT NULL
@@ -85,11 +87,27 @@ module.exports = function createTransactionsRouter(io) {
     if (target.type === 'completion' && target.related_completion_id) {
       db.prepare('UPDATE transactions SET related_completion_id = NULL WHERE related_completion_id = ?')
         .run(target.related_completion_id);
+      // Any chit cashed in for it becomes valid again, so the award can be redone.
+      db.prepare('UPDATE chits SET completion_id = NULL, redeemed_at = NULL WHERE completion_id = ?')
+        .run(target.related_completion_id);
       db.prepare('DELETE FROM completions WHERE id = ?').run(target.related_completion_id);
+    }
+
+    // Undoing a hire means it never happened: the tool goes back on the shelf.
+    if (target.type === 'hire' && target.related_hire_id) {
+      db.prepare('UPDATE transactions SET related_hire_id = NULL WHERE related_hire_id = ?')
+        .run(target.related_hire_id);
+      db.prepare('DELETE FROM hires WHERE id = ?').run(target.related_hire_id);
+    }
+
+    // Undoing a late fee waives it; the tool stays checked in.
+    if (target.type === 'late_fee' && target.related_hire_id) {
+      db.prepare('UPDATE hires SET late_fee = 0 WHERE id = ?').run(target.related_hire_id);
     }
 
     const updatedTeam = db.prepare('SELECT * FROM teams WHERE id = ?').get(target.team_id);
     broadcastState(io);
+    if (target.type === 'hire') io.emit('hires_update', openHires());
     io.emit('feed_event', {
       type: 'undo',
       team: updatedTeam,

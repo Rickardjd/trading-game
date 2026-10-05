@@ -6,14 +6,29 @@
    placeholders (Red Team, Blue Team, ...) and renamed on the day from the banking
    station itself — see "Setting team names on the day" below. Colours are only set in
    the JSON file, so change those there if you want non-default colours.
+   - `starting_funds` is the money each team has in the bank at the start (default
+     £200), so teams can buy and hire straight away. Give teams different amounts if
+     you want unequal starting wealth. It's paid in once, when `npm run seed` first
+     creates the team, and shows in the leader feed as "starting funds". Re-seeding
+     won't pay it again; to change it after seeding, delete the database (step 6) and
+     re-seed, or use a manual adjustment.
+   - Starting **supplies** (paper, cord, etc.) aren't tracked by the system — decide
+     what goes in each team's bag and pack them by hand.
 2. Check `server/seed/activities.json` matches what you're actually running on the day
    (edit values/descriptions if anything changed since planning).
-3. Run `npm run seed` on the server to load that data.
-4. Run `npm run cards` to (re)generate `tools/card-generator/output/cards.html`, then
+3. Check `server/seed/items.json` — the in-game shop prices, hire fees, hire lengths,
+   late fees, and how many of each tool you actually have (`quantity`).
+4. Run `npm run seed` on the server to load that data.
+5. Run `npm run cards` to (re)generate `tools/card-generator/output/cards.html`, then
    open it in a browser, print, cut out, and laminate:
    - One team card per team (put it in the team's folder/envelope).
    - One activity card per activity (place it at that activity's station).
-5. Delete `data/trading-game.sqlite` if you want a completely fresh start (balances
+   - The shop cards, kept at the shop stall.
+   - The tool labels — stick each one on its matching tool (Scissors #1, #2, ...).
+   - The grade chits (green Excellent, blue Standard, orange Poor) — print with
+     "Background graphics" on so the colours show. How many of each is set in
+     `server/seed/chits.json`; re-run `npm run seed` and `npm run cards` after changing it.
+6. Delete `data/trading-game.sqlite` if you want a completely fresh start (balances
    back to zero, no completions) — the next server start recreates it empty, then
    `npm run seed` repopulates teams/activities.
 
@@ -66,6 +81,64 @@ The leaderboard shows a big countdown once it's been started:
 5. When time runs out, the leaderboard flashes red with "TIME'S UP" — no auto-lockout
    of banking stations happens, so leaders still decide when to actually stop taking
    completions.
+
+## Shop and tool hire
+
+Any banking station can act as the shop or hire stall:
+
+- **Selling:** scan the team card, then the item's shop card. Set the quantity and
+  click "Charge". Teams can't spend more than their balance.
+- **Hiring out:** scan the team card, then the tool's label. The screen shows the flat
+  hire fee, how long they have it, and the late fee per minute; click "Check out".
+  A tool that's already out can't be hired to anyone else until it's checked in.
+- **Checking in:** scan the tool's label on its own (no team card needed). The screen
+  shows who hired it and whether it's late; click "Check in". Any late fee — the
+  per-minute rate for every started minute over — is charged to the team that hired
+  it, even if another team hands it back, and even if it takes them below £0.
+- The leader dashboard's "Tools on hire" table shows every tool that's out, with a
+  live countdown, overdue tools in red with their fee so far, and a "Check in" button
+  for tools handed straight to a leader.
+- Hire clocks keep running while the game timer is paused, and when time's up — check
+  in anything still out at the end so late fees are applied before reading the final
+  leaderboard.
+- "Undo last transaction" covers these too: undoing a sale refunds it, undoing a hire
+  refunds the fee and puts the tool back as available, and undoing a late fee waives
+  it (the tool stays checked in). An on-time check-in has no charge, so there's nothing
+  to undo — if a tool was checked in by mistake, just hire it out again.
+
+## Grade chits (assessing activities)
+
+Assessors judge the product at their activity base, then hand the team **one grade
+chit** in the matching colour — Excellent, Standard or Poor. A "Not met" gets no chit;
+just tell the team they can try again. The team takes the chit straight to the bank.
+
+At the bank: scan the team card, then the activity card, then the chit. The award is
+made at the chit's level automatically, and **the banker keeps the chit** (drop it in a
+box). Each chit can only ever be cashed in once — scanning a used one is refused and
+shows who cashed it in, which is worth raising with a leader.
+
+- If the banker scanned the wrong activity, "Undo last transaction" also makes the chit
+  valid again, so just redo it with the right activity card.
+- The Poor / Standard / Excellent / Not met buttons still work, for a lost chit or a
+  leader's call — but by default, no chit means no money.
+- The leader feed notes which chit paid for each award (e.g. "chit CHIT-E-007").
+
+### What happens to the finished product
+
+A passed product is **sold to the market**: the assessor keeps it when handing over the
+chit. This stops a team passing a finished item to another team to show again, and
+means teams have to buy fresh materials for every activity. Tell teams this up front
+(it's on the how-to-play sheet) so nobody argues they "own" their rope.
+
+- **Paper shapes** — the assessor keeps them.
+- **Knots and lashings** — the assessor keeps the cord. Leaders can quietly return it
+  to the shop's stock to sell again.
+- **Big builds** (shelter, bridge, spaghetti tower) — take a photo if you want a
+  record, then dismantle it; the materials go back to the shop, not the team.
+- **Skills with no product** (Morse, semaphore, compass bearing, first aid) — nothing
+  to collect; any bought item used goes back to the shop.
+- **Not met** — the team keeps their materials and can try again.
+- **Hired tools are never collected** — they always go back to the bank to be checked in.
 
 ## During the game
 

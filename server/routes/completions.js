@@ -34,10 +34,22 @@ module.exports = function createCompletionsRouter(io) {
   });
 
   router.post('/', (req, res) => {
-    const { team_code, activity_code, award_level, examiner_notes, station_id } = req.body;
+    const { team_code, activity_code, chit_code, examiner_notes, station_id } = req.body;
+    let { award_level } = req.body;
 
-    if (!team_code || !activity_code || !award_level) {
-      return res.status(400).json({ error: 'team_code, activity_code and award_level are required' });
+    if (!team_code || !activity_code || !(award_level || chit_code)) {
+      return res.status(400).json({ error: 'team_code, activity_code and award_level or chit_code are required' });
+    }
+
+    // A grade chit sets the award level itself, and can only ever be cashed in once.
+    let chit = null;
+    if (chit_code) {
+      chit = db.prepare('SELECT * FROM chits WHERE code = ?').get(chit_code);
+      if (!chit) return res.status(404).json({ error: `No grade chit found for code "${chit_code}"` });
+      if (chit.completion_id) {
+        return res.status(409).json({ error: `Chit ${chit.code} has already been cashed in`, chit });
+      }
+      award_level = chit.award_level;
     }
 
     const team = db.prepare('SELECT * FROM teams WHERE code = ?').get(team_code);
@@ -83,7 +95,18 @@ module.exports = function createCompletionsRouter(io) {
       db.prepare(`
         INSERT INTO transactions (team_id, type, amount, station_id, note, related_completion_id)
         VALUES (?, 'completion', ?, ?, ?, ?)
-      `).run(team.id, awardedValue, station_id || null, `${activity.code} ${activity.name} (${award_level})`, completion.id);
+      `).run(
+        team.id,
+        awardedValue,
+        station_id || null,
+        `${activity.code} ${activity.name} (${award_level}${chit ? `, chit ${chit.code}` : ''})`,
+        completion.id
+      );
+
+      if (chit) {
+        db.prepare("UPDATE chits SET completion_id = ?, redeemed_at = strftime('%Y-%m-%dT%H:%M:%fZ', 'now') WHERE id = ?")
+          .run(completion.id, chit.id);
+      }
 
       db.prepare('UPDATE teams SET balance = balance + ? WHERE id = ?').run(awardedValue, team.id);
     } catch (err) {

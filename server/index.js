@@ -5,6 +5,7 @@ const { Server } = require('socket.io');
 
 const db = require('./db');
 const activitiesRouter = require('./routes/activities');
+const createItemsRouter = require('./routes/items');
 
 const app = express();
 const server = http.createServer(app);
@@ -17,6 +18,8 @@ app.use('/api/activities', activitiesRouter);
 app.use('/api/completions', require('./routes/completions')(io));
 app.use('/api/transactions', require('./routes/transactions')(io));
 app.use('/api/timer', require('./routes/timer')(io));
+app.use('/api/items', createItemsRouter(io));
+app.use('/api/chits', require('./routes/chits'));
 
 app.use('/shared', express.static(path.join(__dirname, '..', 'public', 'shared')));
 app.use('/banking', express.static(path.join(__dirname, '..', 'public', 'banking')));
@@ -31,6 +34,7 @@ io.on('connection', (socket) => {
   const teams = db.prepare('SELECT * FROM teams ORDER BY balance DESC, name ASC').all();
   socket.emit('balance_update', teams);
   socket.emit('timer_update', db.prepare('SELECT * FROM game_timer WHERE id = 1').get());
+  socket.emit('hires_update', createItemsRouter.openHires());
 });
 
 const PORT = process.env.PORT || 3000;

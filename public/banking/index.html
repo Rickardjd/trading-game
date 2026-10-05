@@ -31,7 +31,7 @@
       </div>
     </section>
 
-    <input id="scanInput" class="scan-input" type="text" autocomplete="off" placeholder="Scan team card…" />
+    <input id="scanInput" class="scan-input" type="text" autocomplete="off" placeholder="Scan team card (or a tool being returned)…" />
 
     <div id="message" class="message" hidden></div>
 
@@ -45,6 +45,7 @@
         <button id="renameTeamBtn" class="ghost-btn" style="margin-left:auto">Rename team</button>
         <button id="doneTeamBtn" class="ghost-btn">Done with this team</button>
       </div>
+      <div id="teamHires" class="team-hires" hidden></div>
     </section>
 
     <section id="activityPanel" class="panel" hidden>
@@ -58,11 +59,55 @@
 
       <textarea id="examinerNotes" placeholder="Examiner notes (optional)"></textarea>
 
+      <div class="chit-prompt">Scan the assessor's grade chit to award — or, if there isn't one, choose:</div>
       <div class="award-buttons">
         <button class="award-btn poor" data-level="poor">Poor</button>
         <button class="award-btn standard" data-level="standard">Standard</button>
         <button class="award-btn excellent" data-level="excellent">Excellent</button>
         <button class="award-btn not-met" data-level="not_met">Not met (0)</button>
+      </div>
+    </section>
+
+    <section id="purchasePanel" class="panel" hidden>
+      <div class="activity-header">
+        <span class="chip">BUY</span>
+        <span id="purchaseName" class="activity-name"></span>
+      </div>
+      <div id="purchasePrice" class="activity-meta"></div>
+      <div class="qty-row">
+        <label for="purchaseQty">Quantity</label>
+        <button type="button" class="ghost-btn qty-btn" data-step="-1">−</button>
+        <input id="purchaseQty" type="number" min="1" max="50" value="1" class="qty-input" />
+        <button type="button" class="ghost-btn qty-btn" data-step="1">+</button>
+      </div>
+      <div class="shop-actions">
+        <button id="purchaseConfirmBtn" class="award-btn standard"></button>
+        <button class="award-btn not-met shop-cancel">Cancel</button>
+      </div>
+    </section>
+
+    <section id="hirePanel" class="panel" hidden>
+      <div class="activity-header">
+        <span class="chip">HIRE</span>
+        <span id="hireName" class="activity-name"></span>
+      </div>
+      <div id="hireTerms" class="criteria"></div>
+      <div class="shop-actions">
+        <button id="hireConfirmBtn" class="award-btn standard"></button>
+        <button class="award-btn not-met shop-cancel">Cancel</button>
+      </div>
+    </section>
+
+    <section id="returnPanel" class="panel" hidden>
+      <div class="activity-header">
+        <span class="chip">RETURN</span>
+        <span id="returnName" class="activity-name"></span>
+      </div>
+      <div id="returnDetail" class="activity-meta"></div>
+      <div id="returnStatus" class="return-status"></div>
+      <div class="shop-actions">
+        <button id="returnConfirmBtn" class="award-btn excellent">Check in</button>
+        <button class="award-btn not-met shop-cancel">Cancel</button>
       </div>
     </section>
 
@@ -75,6 +120,7 @@
 
   <script src="/socket.io/socket.io.js"></script>
   <script src="/shared/timer-client.js"></script>
+  <script src="/shared/hire-client.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

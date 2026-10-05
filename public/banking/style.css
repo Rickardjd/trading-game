@@ -106,6 +106,8 @@ main {
 .criteria-label { font-weight: 700; margin-bottom: 4px; color: #333; }
 .criteria { font-size: 1.1rem; line-height: 1.5; margin-bottom: 16px; padding: 12px 14px; background: #f7f7fb; border-radius: 10px; }
 
+.chit-prompt { font-weight: 700; margin: 4px 0 10px; }
+
 #examinerNotes {
   width: 100%;
   min-height: 60px;
@@ -141,7 +143,21 @@ main {
 .reject-title { font-size: 1.4rem; font-weight: 800; color: #a30f2b; margin-bottom: 8px; }
 .reject-detail { color: #7a1224; margin-bottom: 16px; }
 
+.team-hires { margin-top: 14px; display: flex; flex-wrap: wrap; gap: 8px; }
+.hire-tag { background: #eef2ff; color: #1f3fa3; padding: 4px 10px; border-radius: 999px; font-size: 0.9rem; font-weight: 600; font-variant-numeric: tabular-nums; }
+.hire-tag.overdue { background: #ffe1e5; color: #a30f2b; }
+
+.qty-row { display: flex; align-items: center; gap: 10px; margin-bottom: 16px; font-weight: 700; }
+.qty-input { width: 80px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 1.2rem; text-align: center; }
+.qty-btn { font-size: 1.2rem; padding: 8px 16px; }
+
+.shop-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+
+.return-status { font-size: 1.3rem; font-weight: 800; margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: #dcf6e3; color: #106b2c; font-variant-numeric: tabular-nums; }
+.return-status.overdue { background: #ffe1e5; color: #a30f2b; }
+
 @media (max-width: 480px) {
+  .shop-actions { grid-template-columns: 1fr; }
   .award-buttons { grid-template-columns: 1fr; }
   .topbar { flex-wrap: wrap; }
 }

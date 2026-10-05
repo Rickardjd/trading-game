@@ -1,0 +1,23 @@
+[
+  { "code": "B-PAPER", "name": "A4 paper (1 sheet)", "type": "buy", "price": 20 },
+  { "code": "B-COLPAPER", "name": "Coloured/gummed paper (1 sheet)", "type": "buy", "price": 40 },
+  { "code": "B-CORD", "name": "Sash cord (1 metre)", "type": "buy", "price": 15 },
+  { "code": "B-LASHING", "name": "Lashing cord (1 metre)", "type": "buy", "price": 10 },
+  { "code": "B-COTTON", "name": "Cotton wool (1 tuft)", "type": "buy", "price": 10 },
+  { "code": "B-MAP", "name": "OS map extract", "type": "buy", "price": 30 },
+  { "code": "B-LOLLY", "name": "Lolly sticks (bundle of 10)", "type": "buy", "price": 25 },
+  { "code": "B-TAPE", "name": "Masking tape (1 strip)", "type": "buy", "price": 10 },
+  { "code": "B-FABRIC", "name": "Fabric square", "type": "buy", "price": 20 },
+  { "code": "B-BUTTON", "name": "Button", "type": "buy", "price": 10 },
+  { "code": "B-SPAGHETTI", "name": "Dry spaghetti (20 strands)", "type": "buy", "price": 20 },
+  { "code": "B-MARSHMALLOW", "name": "Marshmallow", "type": "buy", "price": 5 },
+
+  { "code": "H-SCISSORS", "name": "Scissors", "type": "hire", "price": 50, "hire_minutes": 5, "late_fee_per_minute": 20, "quantity": 6 },
+  { "code": "H-RULER", "name": "Ruler", "type": "hire", "price": 30, "hire_minutes": 5, "late_fee_per_minute": 10, "quantity": 4 },
+  { "code": "H-PROTRACTOR", "name": "Protractor", "type": "hire", "price": 40, "hire_minutes": 5, "late_fee_per_minute": 15, "quantity": 2 },
+  { "code": "H-DCOMPASS", "name": "Drawing compass", "type": "hire", "price": 60, "hire_minutes": 5, "late_fee_per_minute": 20, "quantity": 2 },
+  { "code": "H-NCOMPASS", "name": "Navigation compass", "type": "hire", "price": 50, "hire_minutes": 10, "late_fee_per_minute": 15, "quantity": 6 },
+  { "code": "H-POLE", "name": "Pole/cane (1.2m)", "type": "hire", "price": 20, "hire_minutes": 10, "late_fee_per_minute": 5, "quantity": 10 },
+  { "code": "H-TORCH", "name": "Torch", "type": "hire", "price": 40, "hire_minutes": 10, "late_fee_per_minute": 15, "quantity": 2 },
+  { "code": "H-SEWKIT", "name": "Sewing kit", "type": "hire", "price": 60, "hire_minutes": 10, "late_fee_per_minute": 20, "quantity": 1 }
+]

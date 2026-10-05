@@ -12,7 +12,12 @@
   const timerPauseBtn = document.getElementById('timerPauseBtn');
   const timerResumeBtn = document.getElementById('timerResumeBtn');
 
+  const hiresBody = document.querySelector('#hiresTable tbody');
+  const hiresTable = document.getElementById('hiresTable');
+  const hiresEmpty = document.getElementById('hiresEmpty');
+
   let teams = [];
+  let openHires = [];
 
   function escapeHtml(str) {
     return String(str ?? '').replace(/[&<>"']/g, (c) => ({
@@ -39,6 +44,54 @@
     if (currentValue) adjTeam.value = currentValue;
   }
 
+  // Overdue tools first, then whatever is due back soonest.
+  function renderHires() {
+    hiresTable.hidden = openHires.length === 0;
+    hiresEmpty.hidden = openHires.length > 0;
+    const sorted = [...openHires].sort((a, b) => new Date(a.due_at) - new Date(b.due_at));
+    hiresBody.innerHTML = sorted
+      .map((h) => {
+        const due = new Date(h.due_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+        const overdue = hireMinutesLate(h) > 0;
+        return `<tr class="${overdue ? 'overdue' : ''}" data-hire-id="${h.id}">
+          <td>${escapeHtml(h.item_name)}</td>
+          <td><span class="swatch" style="background:${h.team_colour}"></span>${escapeHtml(h.team_name)}</td>
+          <td>${due}</td>
+          <td class="hire-status">${escapeHtml(describeHireStatus(h))}</td>
+          <td><button class="ghost-btn checkin-btn" data-item="${escapeHtml(h.item_code)}">Check in</button></td>
+        </tr>`;
+      })
+      .join('');
+  }
+
+  // Tick just the status cells, so the Check in buttons aren't replaced mid-click.
+  function tickHires() {
+    for (const h of openHires) {
+      const row = hiresBody.querySelector(`tr[data-hire-id="${h.id}"]`);
+      if (!row) continue;
+      row.classList.toggle('overdue', hireMinutesLate(h) > 0);
+      row.querySelector('.hire-status').textContent = describeHireStatus(h);
+    }
+  }
+
+  setInterval(tickHires, 1000);
+
+  hiresBody.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.checkin-btn');
+    if (!btn) return;
+    btn.disabled = true;
+    const res = await fetch('/api/items/return', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ item_code: btn.dataset.item, station_id: 'leader-dashboard' }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error || 'Could not check in.');
+      btn.disabled = false;
+    }
+  });
+
   function addFeedItem(text, cls, timestamp) {
     const item = document.createElement('div');
     item.className = `feed-item ${cls || ''}`.trim();
@@ -64,6 +117,26 @@
         'adjustment',
         evt.timestamp
       );
+    } else if (evt.type === 'purchase') {
+      addFeedItem(
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${escapeHtml(evt.team.name)}</strong> bought ${evt.quantity} × ${escapeHtml(evt.item.name)} (£${-evt.amount})`,
+        'purchase',
+        evt.timestamp
+      );
+    } else if (evt.type === 'hire') {
+      addFeedItem(
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${escapeHtml(evt.team.name)}</strong> hired ${escapeHtml(evt.item.name)} for ${evt.item.hire_minutes} min (£${-evt.amount})`,
+        'hire',
+        evt.timestamp
+      );
+    } else if (evt.type === 'return') {
+      addFeedItem(
+        `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${escapeHtml(evt.team.name)}</strong> returned ${escapeHtml(evt.item.name)} ${
+          evt.hire.late_fee > 0 ? `${evt.hire.minutes_late} min late — late fee £${evt.hire.late_fee}` : 'on time'
+        }`,
+        evt.hire.late_fee > 0 ? 'late_fee' : 'return',
+        evt.timestamp
+      );
     } else if (evt.type === 'undo') {
       addFeedItem(
         `<span class="swatch" style="background:${evt.team.colour}"></span> <strong>${escapeHtml(evt.team.name)}</strong> — undo: ${escapeHtml(evt.reversed.note || evt.reversed.type)}`,
@@ -82,6 +155,10 @@
           ? `completion: ${escapeHtml(row.note || '')}`
           : row.type === 'undo'
           ? `undo: ${escapeHtml(row.note || '')}`
+          : row.type === 'opening'
+          ? `starting funds: +£${row.amount}`
+          : ['purchase', 'hire', 'late_fee'].includes(row.type)
+          ? `${escapeHtml(row.note || row.type)} (£${-row.amount})`
           : `adjustment: ${row.amount >= 0 ? '+' : ''}${row.amount} ${row.note ? `(${escapeHtml(row.note)})` : ''}`;
       addFeedItem(
         `<span class="swatch" style="background:${row.team_colour}"></span> <strong>${escapeHtml(row.team_name)}</strong> ${label}`,
@@ -148,6 +225,10 @@
   const socket = io();
   socket.on('balance_update', renderStandings);
   socket.on('feed_event', handleFeedEvent);
+  socket.on('hires_update', (hires) => {
+    openHires = hires;
+    renderHires();
+  });
   socket.on('timer_update', (state) => {
     timerState = state;
     renderGameTimer();

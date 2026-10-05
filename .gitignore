@@ -4,3 +4,5 @@ data/*.sqlite-journal
 tools/card-generator/output/
 *.log
 .DS_Store
+# Word/Excel lock files while a document is open
+~$*

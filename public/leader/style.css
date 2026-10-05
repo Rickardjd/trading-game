@@ -82,3 +82,11 @@ main {
 .feed-item time { margin-left: auto; color: #888; font-size: 0.8rem; white-space: nowrap; }
 .feed-item.undo { background: #fff1f2; }
 .feed-item.adjustment { background: #fff8e1; }
+.feed-item.opening { background: #e8f7ec; }
+.feed-item.purchase, .feed-item.hire, .feed-item.return { background: #eef2ff; }
+.feed-item.late_fee { background: #ffe1e5; }
+
+.hires .checkin-btn { padding: 6px 12px; font-size: 0.85rem; }
+.hires .hire-status { font-variant-numeric: tabular-nums; font-weight: 600; }
+.hires tr.overdue td { background: #ffe1e5; color: #a30f2b; }
+.empty-note { color: #888; }
