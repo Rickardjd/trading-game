@@ -28,6 +28,14 @@
    - The grade chits (green Excellent, blue Standard, orange Poor) — print with
      "Background graphics" on so the colours show. How many of each is set in
      `server/seed/chits.json`; re-run `npm run seed` and `npm run cards` after changing it.
+   - **Using a DYMO LabelWriter 450 instead?** Run `npm run labels`. It writes
+     `dymo-shop-and-tools.html` and `dymo-chits.html` to the same output folder: one
+     label per page, sized for **99014 (54 × 101 mm)**, printed on the top half so you
+     can fold the label over a piece of string (small marks show the fold). Open the file
+     in Chrome or Edge → Print → printer **DYMO LabelWriter 450**, paper size **99014
+     Shipping**, margins **None**, scale **100%**, headers/footers off. The DYMO is
+     black-only, so chits show the grade as stars + a word (Excellent is white-on-black)
+     — stick them onto matching coloured card if you want the colours too.
 6. Delete `data/trading-game.sqlite` if you want a completely fresh start (balances
    back to zero, no completions) — the next server start recreates it empty, then
    `npm run seed` repopulates teams/activities. To just replay with the same setup,

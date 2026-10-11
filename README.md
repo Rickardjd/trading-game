@@ -38,6 +38,8 @@ needed, which also makes Raspberry Pi deployment simpler; see `docs/raspberry-pi
   plain HTML/CSS/JS, no build step.
 - `tools/card-generator/` — `npm run cards` generates a printable HTML sheet of QR
   codes for team, activity and shop cards, plus small labels for each hire tool.
+  `npm run labels` makes the shop, tool and chit labels for a DYMO LabelWriter 450
+  instead (99014 labels, one per page, printed on the top half to fold over string).
 - `docs/` — Raspberry Pi deployment guide, scanner equipment guide, and the day-of run
   book.
   `chits.json` sets how many single-use grade chits of each level to print (codes like

@@ -8,7 +8,8 @@
     "start": "node server/index.js",
     "dev": "nodemon server/index.js",
     "seed": "node server/seed/seed.js",
-    "cards": "node tools/card-generator/generate-cards.js"
+    "cards": "node tools/card-generator/generate-cards.js",
+    "labels": "node tools/card-generator/generate-labels.js"
   },
   "engines": {
     "node": ">=22.5.0"
