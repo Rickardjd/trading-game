@@ -70,6 +70,23 @@ module.exports = function createTimerRouter(io) {
     res.json(updated);
   });
 
+  // Ends the game early: the countdown drops to zero and shows "Time's up" everywhere.
+  router.post('/stop', (req, res) => {
+    const state = getState();
+    if (state.status === 'idle') {
+      return res.status(400).json({ error: 'Timer has not been started' });
+    }
+
+    db.prepare(`
+      UPDATE game_timer SET status = 'running', ends_at = ?, remaining_seconds = 0
+      WHERE id = 1
+    `).run(new Date().toISOString());
+
+    const updated = getState();
+    io.emit('timer_update', updated);
+    res.json(updated);
+  });
+
   router.post('/reset', (req, res) => {
     db.prepare(`
       UPDATE game_timer SET status = 'idle', duration_seconds = 0, ends_at = NULL, remaining_seconds = 0

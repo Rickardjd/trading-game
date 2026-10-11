@@ -3,7 +3,9 @@ CREATE TABLE IF NOT EXISTS teams (
   code TEXT NOT NULL UNIQUE,
   name TEXT NOT NULL,
   colour TEXT NOT NULL,
-  balance INTEGER NOT NULL DEFAULT 0
+  balance INTEGER NOT NULL DEFAULT 0,
+  -- 0 = sitting this game out: hidden from the leaderboard, can't be scanned at the bank.
+  active INTEGER NOT NULL DEFAULT 1
 );
 
 CREATE TABLE IF NOT EXISTS activities (

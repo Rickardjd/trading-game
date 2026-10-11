@@ -42,6 +42,7 @@
   const returnDetail = document.getElementById('returnDetail');
   const returnStatus = document.getElementById('returnStatus');
   const returnConfirmBtn = document.getElementById('returnConfirmBtn');
+  const screenFlash = document.getElementById('screenFlash');
 
   let stationId = localStorage.getItem('stationId');
   if (!stationId) {
@@ -76,6 +77,16 @@
   function clearMessage() {
     messageEl.hidden = true;
   }
+
+  // Flash the whole screen red — a team has tried to spend more than it has.
+  function flashScreen() {
+    screenFlash.hidden = false;
+    screenFlash.style.animation = 'none';
+    // Force reflow so the animation restarts.
+    void screenFlash.offsetWidth;
+    screenFlash.style.animation = '';
+  }
+  screenFlash.addEventListener('animationend', () => { screenFlash.hidden = true; });
 
   function hideItemPanels() {
     currentItem = null;
@@ -205,6 +216,13 @@
 
     if (hire) {
       renderReturn(item, hire);
+    } else if (currentTeam && currentTeam.balance < item.price) {
+      hideItemPanels();
+      flashScreen();
+      showMessage(
+        `Not enough money — ${item.name} costs £${item.price}${item.type === 'hire' ? ' to hire' : ''}, ${currentTeam.name} has £${currentTeam.balance}.`,
+        'error'
+      );
     } else if (!currentTeam) {
       hideItemPanels();
       showMessage(
@@ -267,22 +285,49 @@
     submitAward(chit.award_level, chit.code);
   }
 
+  // Returns true if the code was a team card (and has been handled). Scanning a team
+  // card while another team is on screen finishes with that team and moves on to the
+  // new one, so the banker doesn't have to click "Done with this team" in between.
+  async function handleTeamCardScan(code) {
+    const res = await fetch(`/api/teams/${encodeURIComponent(code)}`);
+    if (!res.ok) return false;
+    const team = await res.json();
+    if (!team.active) {
+      showMessage(`${team.name} isn't playing this game. A leader can add them from the leader dashboard.`, 'error');
+      return true;
+    }
+
+    const previous = currentTeam;
+    // Anything still waiting for a click (an award, a charge, a check-out) is dropped,
+    // not confirmed — say so, in case the banker thinks it went through.
+    const pending = !activityPanel.hidden
+      ? `${currentActivity.code} ${currentActivity.name}`
+      : !purchasePanel.hidden || !hirePanel.hidden
+      ? currentItem.name
+      : null;
+
+    renderTeam(team);
+    resetToActivityScan();
+    if (previous && previous.id !== team.id) {
+      if (pending) {
+        showMessage(`Now serving ${team.name}. ${pending} for ${previous.name} was NOT recorded — it hadn't been confirmed.`, 'error');
+      } else {
+        showMessage(`Now serving ${team.name}.`, 'info');
+      }
+    }
+    return true;
+  }
+
   async function handleTeamScan(code) {
     clearMessage();
     try {
       const chit = await lookupChit(code);
       if (chit) return handleChitScan(chit);
 
-      const res = await fetch(`/api/teams/${encodeURIComponent(code)}`);
-      if (!res.ok) {
-        if (!(await handleItemScan(code))) {
-          showMessage(`No team or tool found for code "${code}"`, 'error');
-        }
-        return;
+      if (await handleTeamCardScan(code)) return;
+      if (!(await handleItemScan(code))) {
+        showMessage(`No team or tool found for code "${code}"`, 'error');
       }
-      const team = await res.json();
-      renderTeam(team);
-      resetToActivityScan();
     } catch (err) {
       showMessage('Could not reach server.', 'error');
     }
@@ -296,8 +341,9 @@
 
       const res = await fetch(`/api/activities/${encodeURIComponent(code)}`);
       if (!res.ok) {
+        if (await handleTeamCardScan(code)) return;
         if (!(await handleItemScan(code))) {
-          showMessage(`No activity, shop item or tool found for code "${code}"`, 'error');
+          showMessage(`No activity, shop item, tool or team found for code "${code}"`, 'error');
         }
         return;
       }
@@ -421,6 +467,7 @@
       });
       const data = await res.json();
       if (!res.ok) {
+        if (res.status === 402) flashScreen();
         showMessage(data.error || 'Could not complete that.', 'error');
         return null;
       }

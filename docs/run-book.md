@@ -30,7 +30,8 @@
      `server/seed/chits.json`; re-run `npm run seed` and `npm run cards` after changing it.
 6. Delete `data/trading-game.sqlite` if you want a completely fresh start (balances
    back to zero, no completions) — the next server start recreates it empty, then
-   `npm run seed` repopulates teams/activities.
+   `npm run seed` repopulates teams/activities. To just replay with the same setup,
+   use "Reset game" on the leader dashboard instead (see below).
 
 ## Setting up on the day
 
@@ -47,7 +48,29 @@
 4. On the projector laptop, open `http://<server-ip>:3000/leaderboard` full-screen
    (F11 in most browsers).
 5. Optionally, open `http://<server-ip>:3000/leader` on a leader's own laptop/tablet
-   for the live activity feed, manual adjustments, and undo.
+   for the live activity feed, manual adjustments, undo, and the game setup controls
+   (which teams are playing, stop game, reset game).
+
+## Choosing which teams are playing
+
+If fewer than six teams turn up, untick the spare ones under "Game setup → Teams
+playing" on the leader dashboard. A team that isn't playing disappears from the
+leaderboard and the standings, and its card is refused at the banking stations. Tick
+it again to bring it back — its balance and history are untouched. The setting is kept
+through a game reset.
+
+## Stopping and resetting the game
+
+Both are on the leader dashboard only:
+
+- **Stop game** (next to the timer, once it's been started) ends the game early: the
+  clock drops to zero and every screen shows "Time's up". Like the clock running out
+  naturally, it doesn't lock the banking stations.
+- **Reset game** (under "Game setup") starts over for a new game: every team goes back
+  to its `starting_funds` from `server/seed/teams.json`, and all completions,
+  purchases, hires, cashed-in chits and the timer are cleared. Team names and which
+  teams are playing are kept. You have to type RESET to confirm. The server saves a
+  copy of the database to `data/backups/` first, in case it was done by mistake.
 
 ## Setting team names on the day
 
@@ -68,9 +91,9 @@ a quick way to fix a typo later.
 
 The leaderboard shows a big countdown once it's been started:
 
-1. On any banking station, enter the number of minutes in the "Minutes" box next to
-   the timer readout, and click "Set & start". This is the only place the timer is
-   set — the leaderboard and leader dashboard only display and (for pause) control it.
+1. On any banking station or the leader dashboard, enter the number of minutes in the
+   "Minutes" box next to the timer readout, and click "Set & start". Doing it again
+   restarts the countdown from full.
 2. The countdown appears immediately on the leaderboard, the banking station, and the
    leader dashboard, all kept in sync from the server.
 3. If leaders need to pause for any reason, click "Pause" (on any banking station) or
@@ -87,7 +110,13 @@ The leaderboard shows a big countdown once it's been started:
 Any banking station can act as the shop or hire stall:
 
 - **Selling:** scan the team card, then the item's shop card. Set the quantity and
-  click "Charge". Teams can't spend more than their balance.
+  click "Charge". Teams can't spend more than their balance — if they try to buy or
+  hire something they can't afford, the banking screen flashes red and nothing is
+  charged.
+- **Next team:** when you've finished with a team, just scan the next team's card —
+  there's no need to click "Done with this team" first. Anything still on screen
+  that hadn't been confirmed (an award, a charge, a check-out) is dropped, and the
+  station says so.
 - **Hiring out:** scan the team card, then the tool's label. The screen shows the flat
   hire fee, how long they have it, and the late fee per minute; click "Check out".
   A tool that's already out can't be hired to anyone else until it's checked in.

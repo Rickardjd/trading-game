@@ -1,6 +1,7 @@
 node_modules/
 data/*.sqlite
 data/*.sqlite-journal
+data/backups/
 tools/card-generator/output/
 *.log
 .DS_Store

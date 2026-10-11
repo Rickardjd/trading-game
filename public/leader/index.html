@@ -20,9 +20,22 @@
           <span id="gameTimerStatus" class="timer-status"></span>
         </div>
         <div class="timer-controls">
+          <input id="timerMinutes" type="number" min="1" max="240" placeholder="Minutes" class="timer-minutes" />
+          <button id="timerStartBtn" class="ghost-btn">Set &amp; start</button>
           <button id="timerPauseBtn" class="ghost-btn" hidden>Pause game</button>
           <button id="timerResumeBtn" class="ghost-btn" hidden>Resume game</button>
+          <button id="timerStopBtn" class="danger-btn" hidden>Stop game</button>
         </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Game setup</h2>
+      <div class="setup-label">Teams playing</div>
+      <div id="teamsPlaying" class="teams-playing"></div>
+      <div class="setup-actions">
+        <button id="resetGameBtn" class="danger-btn">Reset game</button>
+        <span class="empty-note">Puts every team back to its starting funds and clears all completions, hires, chits and the timer.</span>
       </div>
     </section>
 

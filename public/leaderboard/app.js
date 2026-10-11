@@ -44,8 +44,16 @@
   }
 
   function render(teams) {
-    const sorted = [...teams].sort((a, b) => b.balance - a.balance);
+    // Only teams playing this game get a bar.
+    const sorted = teams.filter((t) => t.active).sort((a, b) => b.balance - a.balance);
     const maxBalance = Math.max(1, ...sorted.map((t) => t.balance));
+
+    for (const [id, entry] of rowEls) {
+      if (!sorted.some((t) => t.id === id)) {
+        entry.row.remove();
+        rowEls.delete(id);
+      }
+    }
 
     sorted.forEach((team, index) => {
       const entry = ensureRow(team);

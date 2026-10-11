@@ -20,6 +20,7 @@ app.use('/api/transactions', require('./routes/transactions')(io));
 app.use('/api/timer', require('./routes/timer')(io));
 app.use('/api/items', createItemsRouter(io));
 app.use('/api/chits', require('./routes/chits'));
+app.use('/api/game', require('./routes/game')(io));
 
 app.use('/shared', express.static(path.join(__dirname, '..', 'public', 'shared')));
 app.use('/banking', express.static(path.join(__dirname, '..', 'public', 'banking')));

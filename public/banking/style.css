@@ -156,6 +156,20 @@ main {
 .return-status { font-size: 1.3rem; font-weight: 800; margin-bottom: 16px; padding: 12px 14px; border-radius: 10px; background: #dcf6e3; color: #106b2c; font-variant-numeric: tabular-nums; }
 .return-status.overdue { background: #ffe1e5; color: #a30f2b; }
 
+.screen-flash {
+  position: fixed;
+  inset: 0;
+  background: #d1364a;
+  opacity: 0;
+  pointer-events: none;
+  z-index: 100;
+  animation: screen-flash 1.2s ease-out;
+}
+@keyframes screen-flash {
+  0%, 40%, 80% { opacity: 0.75; }
+  20%, 60%, 100% { opacity: 0; }
+}
+
 @media (max-width: 480px) {
   .shop-actions { grid-template-columns: 1fr; }
   .award-buttons { grid-template-columns: 1fr; }

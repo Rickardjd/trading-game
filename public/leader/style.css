@@ -46,7 +46,20 @@ body {
 .timer-status { font-size: 0.9rem; color: #666; font-weight: 600; }
 .timer-panel.paused .timer-readout { color: #b8860b; }
 .timer-panel.finished .timer-readout { color: #d1364a; }
-.timer-controls { margin-left: auto; }
+.timer-controls { margin-left: auto; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.timer-controls .danger-btn { margin-left: 0; }
+.timer-minutes { width: 90px; padding: 10px; border-radius: 8px; border: 1px solid #ccc; font-size: 0.95rem; }
+
+.setup-label { font-weight: 600; margin-bottom: 8px; }
+.teams-playing { display: flex; flex-wrap: wrap; gap: 10px; }
+.team-toggle {
+  display: flex; align-items: center; gap: 8px; padding: 8px 12px;
+  border: 1px solid #ccc; border-radius: 8px; cursor: pointer; user-select: none;
+}
+.team-toggle.out { color: #888; background: #f4f5f7; }
+.team-toggle .swatch { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+.setup-actions { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #eee; }
+.setup-actions .danger-btn { margin-left: 0; white-space: nowrap; }
 
 main {
   max-width: 900px;

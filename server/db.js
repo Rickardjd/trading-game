@@ -33,4 +33,10 @@ if (!txSql.includes("'opening'")) {
   db.exec('PRAGMA foreign_keys = ON;');
 }
 
+// Older databases predate teams.active (which teams are playing this game).
+const teamColumns = db.prepare('PRAGMA table_info(teams)').all().map((c) => c.name);
+if (!teamColumns.includes('active')) {
+  db.exec('ALTER TABLE teams ADD COLUMN active INTEGER NOT NULL DEFAULT 1;');
+}
+
 module.exports = db;

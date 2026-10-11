@@ -11,6 +11,11 @@
   const gameTimerStatus = document.getElementById('gameTimerStatus');
   const timerPauseBtn = document.getElementById('timerPauseBtn');
   const timerResumeBtn = document.getElementById('timerResumeBtn');
+  const timerStopBtn = document.getElementById('timerStopBtn');
+  const timerMinutes = document.getElementById('timerMinutes');
+  const timerStartBtn = document.getElementById('timerStartBtn');
+  const teamsPlaying = document.getElementById('teamsPlaying');
+  const resetGameBtn = document.getElementById('resetGameBtn');
 
   const hiresBody = document.querySelector('#hiresTable tbody');
   const hiresTable = document.getElementById('hiresTable');
@@ -25,8 +30,38 @@
     }[c]));
   }
 
-  function renderStandings(list) {
-    teams = list;
+  function renderTeamsPlaying() {
+    teamsPlaying.innerHTML = [...teams]
+      .sort((a, b) => a.code.localeCompare(b.code))
+      .map(
+        (t) => `<label class="team-toggle${t.active ? '' : ' out'}">
+          <input type="checkbox" data-code="${t.code}" ${t.active ? 'checked' : ''} />
+          <span class="swatch" style="background:${t.colour}"></span>${escapeHtml(t.name)}
+        </label>`
+      )
+      .join('');
+  }
+
+  teamsPlaying.addEventListener('change', async (e) => {
+    const box = e.target.closest('input[data-code]');
+    if (!box) return;
+    const res = await fetch(`/api/teams/${encodeURIComponent(box.dataset.code)}/active`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ active: box.checked }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error || 'Could not change that team.');
+      renderTeamsPlaying();
+    }
+  });
+
+  // Standings and adjustments only cover the teams playing this game.
+  function renderStandings(all) {
+    teams = all;
+    renderTeamsPlaying();
+    const list = all.filter((t) => t.active);
     const sorted = [...list].sort((a, b) => b.balance - a.balance);
     standingsBody.innerHTML = sorted
       .map(
@@ -215,12 +250,54 @@
       timerState.status === 'paused' ? 'Paused' : finished ? "Time's up" : timerState.status === 'running' ? 'Running' : 'Not started';
     timerPauseBtn.hidden = timerState.status !== 'running';
     timerResumeBtn.hidden = timerState.status !== 'paused';
+    timerStopBtn.hidden = timerState.status === 'idle' || finished;
   }
 
   setInterval(renderGameTimer, 250);
 
+  timerStartBtn.addEventListener('click', async () => {
+    const minutes = Number(timerMinutes.value);
+    if (!minutes || minutes <= 0) {
+      alert('Enter how many minutes the game should run for.');
+      return;
+    }
+    // Starting always restarts the countdown from full, so check before wiping a live one.
+    if (timerState && timerState.status !== 'idle' && !window.confirm(`Restart the countdown at ${minutes} minutes?`)) return;
+    const res = await fetch('/api/timer/start', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ duration_seconds: Math.round(minutes * 60) }),
+    });
+    if (res.ok) {
+      timerMinutes.value = '';
+    } else {
+      const data = await res.json();
+      alert(data.error || 'Could not start the timer.');
+    }
+  });
+
   timerPauseBtn.addEventListener('click', () => fetch('/api/timer/pause', { method: 'POST' }));
   timerResumeBtn.addEventListener('click', () => fetch('/api/timer/resume', { method: 'POST' }));
+  timerStopBtn.addEventListener('click', () => {
+    if (!window.confirm("Stop the game now? The clock goes to zero and shows \"Time's up\" for everyone.")) return;
+    fetch('/api/timer/stop', { method: 'POST' });
+  });
+
+  resetGameBtn.addEventListener('click', async () => {
+    const typed = window.prompt(
+      'Reset the whole game? Every team goes back to its starting funds, and all completions, purchases, hires, chits and the timer are cleared.\n\nType RESET to confirm.'
+    );
+    if (typed === null) return;
+    if (typed.trim().toUpperCase() !== 'RESET') {
+      alert('Not reset — you need to type RESET to confirm.');
+      return;
+    }
+    const res = await fetch('/api/game/reset', { method: 'POST' });
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error || 'Could not reset the game.');
+    }
+  });
 
   const socket = io();
   socket.on('balance_update', renderStandings);
@@ -232,6 +309,10 @@
   socket.on('timer_update', (state) => {
     timerState = state;
     renderGameTimer();
+  });
+  socket.on('game_reset', () => {
+    feedEl.innerHTML = '';
+    loadInitialFeed();
   });
 
   loadInitialFeed();
