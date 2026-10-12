@@ -54,13 +54,6 @@ main {
 .timer-panel.paused .timer-readout { color: #b8860b; }
 .timer-panel.finished .timer-readout { color: #d1364a; }
 .timer-controls { display: flex; align-items: center; gap: 8px; margin-left: auto; flex-wrap: wrap; }
-.timer-minutes {
-  width: 90px;
-  padding: 10px;
-  border-radius: 8px;
-  border: 1px solid #ccc;
-  font-size: 0.95rem;
-}
 
 .scan-input {
   width: 100%;

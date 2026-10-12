@@ -21,11 +21,8 @@
   const timerPanel = document.querySelector('.timer-panel');
   const gameTimerValue = document.getElementById('gameTimerValue');
   const gameTimerStatus = document.getElementById('gameTimerStatus');
-  const timerMinutes = document.getElementById('timerMinutes');
-  const timerStartBtn = document.getElementById('timerStartBtn');
   const timerPauseBtn = document.getElementById('timerPauseBtn');
   const timerResumeBtn = document.getElementById('timerResumeBtn');
-  const timerResetBtn = document.getElementById('timerResetBtn');
   const teamHires = document.getElementById('teamHires');
   const purchasePanel = document.getElementById('purchasePanel');
   const purchaseName = document.getElementById('purchaseName');
@@ -550,30 +547,8 @@
 
   setInterval(renderGameTimer, 250);
 
-  timerStartBtn.addEventListener('click', async () => {
-    const minutes = Number(timerMinutes.value);
-    if (!minutes || minutes <= 0) {
-      showMessage('Enter how many minutes the game should run for.', 'error');
-      return;
-    }
-    const res = await fetch('/api/timer/start', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ duration_seconds: Math.round(minutes * 60) }),
-    });
-    const data = await res.json();
-    if (!res.ok) {
-      showMessage(data.error || 'Could not start the timer.', 'error');
-    }
-  });
-
   timerPauseBtn.addEventListener('click', () => fetch('/api/timer/pause', { method: 'POST' }));
   timerResumeBtn.addEventListener('click', () => fetch('/api/timer/resume', { method: 'POST' }));
-  timerResetBtn.addEventListener('click', async () => {
-    if (!window.confirm('Reset the game timer? This clears the countdown for everyone.')) return;
-    await fetch('/api/timer/reset', { method: 'POST' });
-    timerMinutes.value = '';
-  });
 
   const socket = io();
   socket.on('hires_update', (hires) => {
