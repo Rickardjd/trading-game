@@ -116,6 +116,8 @@ The leaderboard shows a big countdown once it's been started:
    everywhere, and "Resume" picks up exactly where it left off.
 4. To correct a wrong duration, just "Set & start" again with the right number of
    minutes — it restarts the countdown from full (after asking you to confirm).
+   "Reset timer" (leader dashboard) clears the countdown back to not-started without
+   touching balances; it also takes the leaderboard off the final results podium.
 5. When time runs out, the leaderboard flashes red with "TIME'S UP" — no auto-lockout
    of banking stations happens, so leaders still decide when to actually stop taking
    completions.

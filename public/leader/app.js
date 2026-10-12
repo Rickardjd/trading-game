@@ -12,6 +12,7 @@
   const timerPauseBtn = document.getElementById('timerPauseBtn');
   const timerResumeBtn = document.getElementById('timerResumeBtn');
   const timerStopBtn = document.getElementById('timerStopBtn');
+  const timerResetBtn = document.getElementById('timerResetBtn');
   const timerMinutes = document.getElementById('timerMinutes');
   const timerStartBtn = document.getElementById('timerStartBtn');
   const teamsPlaying = document.getElementById('teamsPlaying');
@@ -274,6 +275,7 @@
     timerPauseBtn.hidden = timerState.status !== 'running';
     timerResumeBtn.hidden = timerState.status !== 'paused';
     timerStopBtn.hidden = timerState.status === 'idle' || finished;
+    timerResetBtn.hidden = timerState.status === 'idle';
   }
 
   setInterval(renderGameTimer, 250);
@@ -304,6 +306,11 @@
   timerStopBtn.addEventListener('click', () => {
     if (!window.confirm("Stop the game now? The clock goes to zero and shows \"Time's up\" for everyone.")) return;
     fetch('/api/timer/stop', { method: 'POST' });
+  });
+
+  timerResetBtn.addEventListener('click', () => {
+    if (!window.confirm('Reset the game timer? This clears the countdown for everyone. Balances are not affected.')) return;
+    fetch('/api/timer/reset', { method: 'POST' });
   });
 
   resetGameBtn.addEventListener('click', async () => {
