@@ -119,6 +119,11 @@ The leaderboard shows a big countdown once it's been started:
 5. When time runs out, the leaderboard flashes red with "TIME'S UP" — no auto-lockout
    of banking stations happens, so leaders still decide when to actually stop taking
    completions.
+6. A few seconds later the leaderboard switches to a "Final results" podium: third
+   place rises first, then second, then first with a fanfare, and the remaining teams
+   are listed underneath. It keeps updating, so late fees and any last completions you
+   still bank after time's up change the podium live. Resetting or restarting the
+   timer (or "Reset game") brings the normal leaderboard back.
 
 ## Shop and tool hire
 

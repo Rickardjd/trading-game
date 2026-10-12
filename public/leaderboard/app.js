@@ -4,6 +4,7 @@
   const rowEls = new Map(); // team.id -> { row, fill, value }
   let previousLeaderId = null;
   const previousBalances = new Map(); // team.id -> balance at the last render
+  let standings = []; // teams playing, best first
 
   const ROW_HEIGHT_VH = 11;
 
@@ -65,7 +66,10 @@
       entry.value.textContent = `£${team.balance}`;
     });
 
-    const someoneEarned = sorted.some((t) => previousBalances.has(t.id) && t.balance > previousBalances.get(t.id));
+    standings = sorted;
+    renderPodium();
+
+    const someoneEarned =sorted.some((t) => previousBalances.has(t.id) && t.balance > previousBalances.get(t.id));
     previousBalances.clear();
     sorted.forEach((t) => previousBalances.set(t.id, t.balance));
 
@@ -81,6 +85,47 @@
 
     if (newLeader) sounds.fanfare();
     else if (someoneEarned) sounds.coin();
+  }
+
+  // --- Final results podium, shown once the game is over ---
+  const podiumEl = document.getElementById('podium');
+  const podiumRest = document.getElementById('podiumRest');
+  const ORDINALS = ['1st', '2nd', '3rd', '4th', '5th', '6th'];
+  const PODIUM_DELAY_MS = 3500; // lets the time's-up horn finish first
+  const WINNER_REVEAL_MS = 2400; // when first place rises — matches the CSS animation delay
+  let podiumTimers = [];
+
+  // Kept up to date while it's showing, since late fees and last-minute completions
+  // can still change the result after time's up.
+  function renderPodium() {
+    podiumEl.querySelectorAll('.podium-place').forEach((el) => {
+      const team = standings[Number(el.dataset.place) - 1];
+      el.hidden = !team;
+      if (!team) return;
+      applyLabel(el.querySelector('.podium-name'), team.name);
+      el.querySelector('.podium-score').textContent = `£${team.balance}`;
+      el.querySelector('.podium-block').style.background = team.colour;
+    });
+    podiumRest.replaceChildren(
+      ...standings.slice(3).map((team, i) => {
+        const item = document.createElement('span');
+        item.textContent = `${ORDINALS[i + 3] || `${i + 4}th`} ${team.name} £${team.balance}`;
+        return item;
+      })
+    );
+  }
+
+  function showPodium(withSound) {
+    if (!podiumEl.hidden) return;
+    renderPodium();
+    podiumEl.hidden = false;
+    if (withSound) podiumTimers.push(setTimeout(() => sounds.fanfare(), WINNER_REVEAL_MS));
+  }
+
+  function hidePodium() {
+    podiumTimers.forEach(clearTimeout);
+    podiumTimers = [];
+    podiumEl.hidden = true;
   }
 
   function showFlash(text) {
@@ -103,6 +148,7 @@
     if (timerState.status === 'idle' && timerState.duration_seconds === 0) {
       timerBar.hidden = true;
       wasFinished = false;
+      hidePodium();
       return;
     }
     timerBar.hidden = false;
@@ -111,7 +157,14 @@
     const finished = timerState.status === 'running' && remaining <= 0;
     timerBar.classList.toggle('paused', timerState.status === 'paused');
     timerBar.classList.toggle('finished', finished);
-    if (finished && wasFinished === false) sounds.timeUp();
+    if (finished && wasFinished === false) {
+      sounds.timeUp();
+      podiumTimers.push(setTimeout(() => showPodium(true), PODIUM_DELAY_MS));
+    } else if (finished && wasFinished === null) {
+      showPodium(false);
+    } else if (!finished) {
+      hidePodium();
+    }
     wasFinished = finished;
   }
 
