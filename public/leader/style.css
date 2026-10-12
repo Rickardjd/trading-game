@@ -58,6 +58,11 @@ body {
 }
 .team-toggle.out { color: #888; background: #f4f5f7; }
 .team-toggle .swatch { width: 14px; height: 14px; border-radius: 50%; display: inline-block; }
+.rename-btn {
+  margin-left: 6px; padding: 3px 8px; border: 1px solid #ccc; border-radius: 6px;
+  background: #fff; color: #33334d; font-size: 0.8rem; cursor: pointer;
+}
+.rename-btn:hover { background: #eef2ff; }
 .setup-actions { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding-top: 16px; border-top: 1px solid #eee; }
 .setup-actions .danger-btn { margin-left: 0; white-space: nowrap; }
 

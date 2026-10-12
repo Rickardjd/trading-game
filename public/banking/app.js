@@ -6,7 +6,6 @@
   const teamName = document.getElementById('teamName');
   const teamBalance = document.getElementById('teamBalance');
   const doneTeamBtn = document.getElementById('doneTeamBtn');
-  const renameTeamBtn = document.getElementById('renameTeamBtn');
   const activityPanel = document.getElementById('activityPanel');
   const activityCode = document.getElementById('activityCode');
   const activityName = document.getElementById('activityName');
@@ -429,32 +428,6 @@
 
   document.querySelectorAll('.award-btn').forEach((btn) => {
     btn.addEventListener('click', () => submitAward(btn.dataset.level));
-  });
-
-  renameTeamBtn.addEventListener('click', async () => {
-    if (!currentTeam) return;
-    const newName = window.prompt('Team name:', currentTeam.name);
-    if (newName === null) return;
-    const trimmed = newName.trim();
-    if (!trimmed || trimmed === currentTeam.name) return;
-
-    clearMessage();
-    try {
-      const res = await fetch(`/api/teams/${encodeURIComponent(currentTeam.code)}/name`, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: trimmed }),
-      });
-      const data = await res.json();
-      if (!res.ok) {
-        showMessage(data.error || 'Could not rename team.', 'error');
-        return;
-      }
-      renderTeam(data);
-      showMessage(`Team renamed to "${data.name}".`, 'success');
-    } catch (err) {
-      showMessage('Could not reach server.', 'error');
-    }
   });
 
   async function postItemAction(url, body) {

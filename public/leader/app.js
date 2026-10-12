@@ -37,10 +37,33 @@
         (t) => `<label class="team-toggle${t.active ? '' : ' out'}">
           <input type="checkbox" data-code="${t.code}" ${t.active ? 'checked' : ''} />
           <span class="swatch" style="background:${t.colour}"></span>${escapeHtml(t.name)}
+          <button type="button" class="rename-btn" data-code="${t.code}" title="Rename team">Rename</button>
         </label>`
       )
       .join('');
   }
+
+  teamsPlaying.addEventListener('click', async (e) => {
+    const btn = e.target.closest('.rename-btn');
+    if (!btn) return;
+    // The button sits inside the tick-box label; don't let the click toggle the team.
+    e.preventDefault();
+    const team = teams.find((t) => t.code === btn.dataset.code);
+    const newName = window.prompt('Team name:', team.name);
+    if (newName === null) return;
+    const trimmed = newName.trim();
+    if (!trimmed || trimmed === team.name) return;
+
+    const res = await fetch(`/api/teams/${encodeURIComponent(team.code)}/name`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: trimmed }),
+    });
+    if (!res.ok) {
+      const data = await res.json();
+      alert(data.error || 'Could not rename team.');
+    }
+  });
 
   teamsPlaying.addEventListener('change', async (e) => {
     const box = e.target.closest('input[data-code]');

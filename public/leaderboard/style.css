@@ -120,6 +120,23 @@ html, body {
   text-shadow: 0 0 30px rgba(255,215,0,0.9);
 }
 
+.sound-btn {
+  position: fixed;
+  right: 1vw;
+  bottom: 1vh;
+  padding: 0.6vh 1vw;
+  border: 1px solid rgba(255,255,255,0.5);
+  border-radius: 999px;
+  background: #d1364a;
+  color: #fff;
+  font-size: 1.1vw;
+  font-weight: 700;
+  cursor: pointer;
+}
+/* Once sound is on, fade right back so it doesn't distract on the projector. */
+.sound-btn.on { background: transparent; opacity: 0.3; font-weight: 400; }
+.sound-btn.on:hover { opacity: 1; }
+
 @keyframes flashPop {
   0% { opacity: 0; transform: scale(0.8); }
   15% { opacity: 1; transform: scale(1.05); }

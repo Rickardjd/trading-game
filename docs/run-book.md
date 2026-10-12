@@ -3,8 +3,8 @@
 ## Before the event
 
 1. Team names can either be set in `server/seed/teams.json` ahead of time, or left as
-   placeholders (Red Team, Blue Team, ...) and renamed on the day from the banking
-   station itself — see "Setting team names on the day" below. Colours are only set in
+   placeholders (Red Team, Blue Team, ...) and renamed on the day from the leader
+   dashboard — see "Setting team names on the day" below. Colours are only set in
    the JSON file, so change those there if you want non-default colours.
    - `starting_funds` is the money each team has in the bank at the start (default
      £200), so teams can buy and hire straight away. Give teams different amounts if
@@ -55,6 +55,12 @@
      trail.
 4. On the projector laptop, open `http://<server-ip>:3000/leaderboard` full-screen
    (F11 in most browsers).
+   - The leaderboard has sound effects: a trumpet fanfare when a team moves into first
+     place, a coin "ching" when a team earns money, and a horn call at time's up.
+     Browsers won't play sound until the page has been clicked, so **click once
+     anywhere on the leaderboard** after opening it — the red "Sound off" button in the
+     bottom-right corner fades to "Sound on". Click that button to mute/unmute. Plug
+     the laptop into speakers and check its volume.
 5. Optionally, open `http://<server-ip>:3000/leader` on a leader's own laptop/tablet
    for the live activity feed, manual adjustments, undo, and the game setup controls
    (which teams are playing, stop game, reset game).
@@ -85,10 +91,11 @@ Both are on the leader dashboard only:
 If you didn't set real team names in `teams.json` beforehand, do it now, before
 trading starts:
 
-1. On any banking station, scan a team's card (or type its code) to bring up that
-   team's panel.
-2. Click "Rename team", type the real name, and confirm.
-3. The new name appears on the leaderboard and leader dashboard immediately.
+1. On the leader dashboard, find the team under "Game setup → Teams playing".
+2. Click "Rename" next to it, type the real name, and confirm.
+3. The new name appears on the leaderboard and banking stations immediately.
+
+Renaming is only on the leader dashboard — banking stations can't change team names.
 
 Names are capped at 24 characters so they stay readable on the leaderboard — longer
 names shrink to fit automatically, but very long ones will still be trimmed with "…".

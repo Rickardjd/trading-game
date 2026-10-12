@@ -17,8 +17,7 @@ module.exports = function createTeamsRouter(io) {
     res.json(team);
   });
 
-  // Set a team's display name — used at the start of the game to replace the
-  // placeholder seed names, from the banking station.
+  // Set a team's display name — from the leader dashboard.
   router.patch('/:code/name', (req, res) => {
     const { name } = req.body || {};
     const trimmed = typeof name === 'string' ? name.trim() : '';
